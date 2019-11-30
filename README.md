@@ -16,6 +16,7 @@ samples, guidance on mobile development, and a full API reference.
 ### Usage
 
 - initialize before update session
+
 await FlutterMPGS.init(region: region, gatewayId: gatewayId, apiVersion: apiVersion);
 
 - update mpgs session using sessionId and card details

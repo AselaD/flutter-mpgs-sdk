@@ -1,0 +1,45 @@
+group 'lk.directpay.flutter_mpgs'
+version '1.0-SNAPSHOT'
+
+buildscript {
+    repositories {
+        google()
+        jcenter()
+    }
+
+    dependencies {
+        classpath 'com.android.tools.build:gradle:3.2.1'
+    }
+}
+
+rootProject.allprojects {
+    repositories {
+        google()
+        jcenter()
+    }
+}
+
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion 28
+
+    sourceSets {
+        main.java.srcDirs += 'src/main/kotlin'
+    }
+    defaultConfig {
+        minSdkVersion 16
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+    lintOptions {
+        disable 'InvalidPackage'
+    }
+}
+ext{
+    gsonVersion = '2.8.2'
+    rxJavaVersion = '2.2.5'
+}
+dependencies {
+    implementation "com.google.code.gson:gson:$gsonVersion"
+    api "io.reactivex.rxjava2:rxjava:$rxJavaVersion"
+}
