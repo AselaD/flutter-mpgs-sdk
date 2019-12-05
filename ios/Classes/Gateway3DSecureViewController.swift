@@ -91,7 +91,7 @@ public class Gateway3DSecureViewController: UIViewController, WKNavigationDelega
     fileprivate func setupView() {
         view.backgroundColor = .white
         
-        activityIndicator = UIActivityIndicatorView(activityIndicatorStyle: .gray)
+        activityIndicator = UIActivityIndicatorView(style: .gray)
         activityIndicator.hidesWhenStopped = true
         
         cancelButton = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(cancelAction))
