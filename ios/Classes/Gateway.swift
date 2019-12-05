@@ -70,7 +70,7 @@ public class Gateway: NSObject {
             
             task = try execute(.put, path: "session/\(session)", payload: fullPayload, apiVersion: apiVersion, headers: headers, completion: completion)
         } catch {
-            defer {
+            do {
                 completion(GatewayResult(error))
             }
         }
