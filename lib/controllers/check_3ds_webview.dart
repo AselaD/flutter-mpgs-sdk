@@ -68,6 +68,7 @@ class _Check3DSWebView extends State<Check3DSWebView> {
   }
 
   void _handleUriChange(String url) {
+    print("URL :" + url);
     final Uri uri = Uri.parse(url);
     if (uri.isScheme(GatewayResponse.REDIRECT_SCHEMA) && uri.host == GatewayResponse.REDIRECT_HOST) {
       final params = uri.queryParameters;

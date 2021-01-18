@@ -30,11 +30,13 @@ class ScreenState {
   static const int OTP_WIDGET = 2;
   static const int SUCCESS_WIDGET = 4;
   static const int ADD_CARD_WIDGET = 1;
+  static const int INITIAL_WIDGET = 0;
   static const int FAILED_WIDGET = 3;
 }
 
 class GatewayResponse {
   static const String AUTHENTICATION_SUCCESSFUL = "AUTHENTICATION_SUCCESSFUL";
+  static const String AUTHENTICATION_ATTEMPTED = "AUTHENTICATION_ATTEMPTED";
   static const String REDIRECT_SCHEMA = "https";
   static const String ACS_RESULT = "acsResult";
   static const String REDIRECT_HOST = "prod.orelpay.lk";

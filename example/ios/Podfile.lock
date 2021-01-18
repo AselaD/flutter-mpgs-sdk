@@ -2,26 +2,33 @@ PODS:
   - Flutter (1.0.0)
   - flutter_mpgs_sdk (0.0.1):
     - Flutter
-  - webview_flutter (0.0.1):
+    - MBBlinkCard (~> 1.1.1)
+  - flutter_webview_plugin (0.0.1):
     - Flutter
+  - MBBlinkCard (1.1.1)
 
 DEPENDENCIES:
   - Flutter (from `Flutter`)
   - flutter_mpgs_sdk (from `.symlinks/plugins/flutter_mpgs_sdk/ios`)
-  - webview_flutter (from `.symlinks/plugins/webview_flutter/ios`)
+  - flutter_webview_plugin (from `.symlinks/plugins/flutter_webview_plugin/ios`)
+
+SPEC REPOS:
+  trunk:
+    - MBBlinkCard
 
 EXTERNAL SOURCES:
   Flutter:
     :path: Flutter
   flutter_mpgs_sdk:
     :path: ".symlinks/plugins/flutter_mpgs_sdk/ios"
-  webview_flutter:
-    :path: ".symlinks/plugins/webview_flutter/ios"
+  flutter_webview_plugin:
+    :path: ".symlinks/plugins/flutter_webview_plugin/ios"
 
 SPEC CHECKSUMS:
   Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
-  flutter_mpgs_sdk: 91d4ff597c72a9a5fdf67d24d78e6bf7db965a8a
-  webview_flutter: db3aba222b23e4dc432e0c5882834123dc50ff9f
+  flutter_mpgs_sdk: d15cac206d0bc65da26ba1f44d6145fc0799f903
+  flutter_webview_plugin: ed9e8a6a96baf0c867e90e1bce2673913eeac694
+  MBBlinkCard: dedacbaebf3d5fc95326d603486ad6b2407dafd2
 
 PODFILE CHECKSUM: 1b66dae606f75376c5f2135a8290850eeb09ae83
 

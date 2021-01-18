@@ -9,17 +9,28 @@ import 'flutter_mpgs.dart';
 
 class CardAddForm extends StatefulWidget {
   static String accessToken;
-  final Color backgroundColor, textColor, buttonColor, buttonTextColor;
+  static String iosLicense, androidLicense;
+  final Color backgroundColor,
+      textColor,
+      buttonColor,
+      buttonTextColor,
+      backButtonTextColor;
 
   static init(String accessToken) {
     CardAddForm.accessToken = accessToken;
+  }
+
+  static setBlinkCardLicense({String ios, String android}) {
+    CardAddForm.iosLicense = ios;
+    CardAddForm.androidLicense = android;
   }
 
   CardAddForm(
       {this.backgroundColor,
       this.textColor,
       this.buttonColor,
-      this.buttonTextColor});
+      this.buttonTextColor,
+      this.backButtonTextColor});
   createState() => _CardAddForm();
 }
 
@@ -28,8 +39,10 @@ class _CardAddForm extends State<CardAddForm> {
   final _addFormKey = GlobalKey<FormState>();
   final _otpFormKey = GlobalKey<FormState>();
 
-  int state = ScreenState.ADD_CARD_WIDGET;
+  int state = ScreenState.INITIAL_WIDGET;
   String errorMessage, errorTitle, otpText = "";
+
+  FocusNode nicknameFocus = FocusNode();
 
   TextEditingController nameController = TextEditingController();
   TextEditingController otpController = TextEditingController();
@@ -66,12 +79,14 @@ class _CardAddForm extends State<CardAddForm> {
 
   _buildUI() {
     switch (this.state) {
+      case ScreenState.ADD_CARD_WIDGET:
+        return _addUI();
       case ScreenState.OTP_WIDGET:
         return _otpUI();
       case ScreenState.SUCCESS_WIDGET:
         return _successUI();
       default:
-        return _addUI();
+        return _initialUI();
     }
   }
 
@@ -133,7 +148,7 @@ class _CardAddForm extends State<CardAddForm> {
                         },
                   child: Text(
                     "Back",
-                    style: TextStyle(color: widget.buttonTextColor),
+                    style: TextStyle(color: widget.backButtonTextColor),
                   ),
                 ))
           ]),
@@ -159,6 +174,7 @@ class _CardAddForm extends State<CardAddForm> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           TextFormField(
+            focusNode: nicknameFocus,
             controller: nicknameController,
             decoration: InputDecoration(hintText: "Nickname"),
             keyboardType: TextInputType.text,
@@ -270,6 +286,22 @@ class _CardAddForm extends State<CardAddForm> {
                         style: TextStyle(color: widget.buttonTextColor),
                       ),
               )),
+          SizedBox(height: 20),
+          SizedBox(
+              width: double.infinity,
+              height: 50,
+              child: FlatButton(
+                color: widget.buttonColor,
+                onPressed: this.processing
+                    ? null
+                    : () {
+                        _setScreen(ScreenState.INITIAL_WIDGET);
+                      },
+                child: Text(
+                  "Back",
+                  style: TextStyle(color: widget.backButtonTextColor),
+                ),
+              )),
           _poweredBy()
         ],
       ),
@@ -369,17 +401,93 @@ class _CardAddForm extends State<CardAddForm> {
   }
 
   _complete(Map result) {
+    print("RESULT:");
     print(result);
     if (result.containsKey("response")) {
       final response = result["response"];
       final secure3ds = response["3DSecure"];
       final gatewayCode = secure3ds["gatewayCode"] as String;
-      if (gatewayCode == GatewayResponse.AUTHENTICATION_SUCCESSFUL) {
+      if (gatewayCode == GatewayResponse.AUTHENTICATION_SUCCESSFUL ||
+          gatewayCode == GatewayResponse.AUTHENTICATION_ATTEMPTED) {
         _sendAddCardRequest();
       } else {
         this._setErrorMessage("3DS authentication failed!");
       }
+    }else{
+      print("NOT CONTAINING THE RESPONSE");
     }
+  }
+
+  _initialUI() {
+    return Column(
+      children: <Widget>[
+        SizedBox(
+            width: double.infinity,
+            height: 50,
+            child: RaisedButton(
+              color: widget.buttonColor,
+              onPressed: this.processing ? null : _scan,
+              child: this.processing
+                  ? SizedBox(
+                      height: 30,
+                      width: 30,
+                      child: CircularProgressIndicator(
+                        backgroundColor: widget.buttonTextColor,
+                      ))
+                  : Text(
+                      "Scan to Add Card",
+                      style: TextStyle(color: widget.buttonTextColor),
+                    ),
+            )),
+        SizedBox(
+          height: 20,
+        ),
+        SizedBox(
+            width: double.infinity,
+            height: 50,
+            child: RaisedButton(
+              color: widget.buttonColor,
+              onPressed: this.processing
+                  ? null
+                  : () {
+                      nicknameController.text = "";
+                      nameController.text = "";
+                      numberController.text = "";
+                      yyController.text = "";
+                      mmController.text = "";
+                      cvvController.text = "";
+
+                      _setScreen(ScreenState.ADD_CARD_WIDGET);
+                    },
+              child: this.processing
+                  ? SizedBox(
+                      height: 30,
+                      width: 30,
+                      child: CircularProgressIndicator(
+                        backgroundColor: widget.buttonTextColor,
+                      ))
+                  : Text(
+                      "Manually Add Card",
+                      style: TextStyle(color: widget.buttonTextColor),
+                    ),
+            )),
+      ],
+    );
+  }
+
+  Future<void> _scan() async {
+    final card = await FlutterMpgsSdk.startScanner(
+        ios: CardAddForm.iosLicense, android: CardAddForm.androidLicense);
+    if (card != null) {
+      numberController.text = card.number.replaceAll(" ", "-");
+      cvvController.text = card.cvv;
+      mmController.text = card.mm.toString().padLeft(2, '0');
+      yyController.text = card.yy.toString().substring(2, 4);
+      nameController.text = card.cardName;
+
+      _setScreen(ScreenState.ADD_CARD_WIDGET);
+      FocusScope.of(context).requestFocus(nicknameFocus);
+    } else {}
   }
 
   _poweredBy() {
@@ -442,17 +550,10 @@ class _CardAddForm extends State<CardAddForm> {
                 : () {
                     _setScreen(ScreenState.ADD_CARD_WIDGET);
                   },
-            child: this.processing
-                ? SizedBox(
-                    height: 30,
-                    width: 30,
-                    child: CircularProgressIndicator(
-                      backgroundColor: widget.buttonTextColor,
-                    ))
-                : Text(
-                    "Back",
-                    style: TextStyle(color: widget.buttonTextColor),
-                  ),
+            child: Text(
+              "Back",
+              style: TextStyle(color: widget.backButtonTextColor),
+            ),
           )
         ],
       ),
