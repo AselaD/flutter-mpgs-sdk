@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/android.iml" filepath="$PROJECT_DIR$/android.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/flutter_mpgs_sdk.iml" filepath="$PROJECT_DIR$/.idea/modules/flutter_mpgs_sdk.iml" group="flutter_mpgs_sdk" />
     </modules>
   </component>
 </project>
